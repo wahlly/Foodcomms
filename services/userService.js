@@ -1,10 +1,64 @@
+const { SUCCESS, NOT_FOUND, BAD_REQUEST, UNAUTHORIZED, FORBIDDEN } = require("../constants");
+const { sendMailNotification } = require("../modules/email");
 const { User } = require("../schema/userSchema");
-const { tokenHandler, messageHandler } = require("../utils");
+const { tokenHandler, messageHandler, hashPassword, AlphaNumeric, verifyPassword } = require("../utils");
 
 
 const userRegistrationService = async (payload) => {
+      const otp = AlphaNumeric(6);
       let user = new User(payload);
+      user.password = await hashPassword(user.password);
+      user.otp = otp;
       user = await user.save();
-      const token = tokenHandler(user, "User");
-      return messageHandler("User Registered Successfully", true, 200, token);
+      user.password = undefined;
+
+      const substitutional_parameters = { name: user.name, otp }
+      await sendMailNotification(user.email, "Email Verification", substitutional_parameters, "VERIFY_OTP");
+      return messageHandler("User Registered Successfully", true, SUCCESS, user);
 }
+
+const verifyEmailService = async (payload) => {
+      const user = await User.findOne({ email: payload.email });
+
+      if(user === null) {
+            return messageHandler("Invalid user", false, NOT_FOUND, {});
+      }
+      if(user.otp === payload.otp) {
+            if(user.verified) {
+                  return messageHandler("User already verified", false, BAD_REQUEST, {});
+            }
+
+            const updateUser = await User.updateOne({ email: payload.email }, { $set: { verified: true }})
+
+            if(updateUser.nModified === 0) {
+                  return messageHandler("Unable to complete request", false, BAD_REQUEST, {});
+            }
+
+            user.verified = true;
+            return messageHandler("User verified successfully", true, SUCCESS, user);
+      }
+
+      return messageHandler("Invalid OTP", false, BAD_REQUEST, {});
+}
+
+const userLoginService = async (payload) => {
+      const { email, password } = payload;
+      const user = await User.findOne({ email }).select("+password");
+
+      if(user === null) {
+            return messageHandler("Invalid user", false, NOT_FOUND, {});
+      }
+      if(!user.verified) {
+            return messageHandler("User is not verified", false, FORBIDDEN, {});
+      }
+
+      const isValid = await verifyPassword(password, user.password);
+      if(isValid) {
+            const token = tokenHandler(user);
+            return messageHandler("User logged in successfully", true, SUCCESS, token);
+      }
+
+      return messageHandler("Invalid Email or password", false, UNAUTHORIZED, {});
+}
+
+module.exports = { userRegistrationService, verifyEmailService, userLoginService };

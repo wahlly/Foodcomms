@@ -5,9 +5,9 @@ const messageHandler = (message, success, statusCode, data) => {
       return (response = { message, success, statusCode, data });
 };
 
-const tokenHandler = (data, userType) => {
+const tokenHandler = (data) => {
       var { _id } = data;
-      var token = jwt.sign({ userId: _id, userType }, process.env.SECRET_KEY, {
+      var token = jwt.sign({ userId: _id }, process.env.SECRET_KEY, {
         expiresIn: process.env.TOKEN_EXPIRE_IN,
       });
       return { token, userId: _id };

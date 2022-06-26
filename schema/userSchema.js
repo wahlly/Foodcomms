@@ -13,6 +13,14 @@ const userSchema = new Schema({
             type: String,
             required: true,
             select: false
+      },
+      otp: {
+            type: String,
+            default: ""
+      },
+      verified: {
+            type: Boolean,
+            default: false
       }
 }, { timestamps: true });
 
