@@ -1,6 +1,15 @@
 const mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_SECRET_KEY, domain: process.env.MAILGUN_DOMAIN });
+const nodemailer = require("nodemailer");
 const handlebars = require('handlebars')
 const fs = require('fs')
+
+const mailTransporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'olaifaolawaleh@gmail.com',
+          pass: process.env.GOOGLE_APP_ACCESS
+      }
+  });
 
 const sendMailNotification = (to_email, subject, substitutional_parameters, Template_Name) => {
   const source = fs.readFileSync(`./modules/templates/${Template_Name}.hbs`, "utf8");
@@ -14,7 +23,7 @@ const sendMailNotification = (to_email, subject, substitutional_parameters, Temp
           html: compiledTemplate(substitutional_parameters)
         };
     
-      return mailgun.messages().send(data, (error) => {
+      return mailTransporter.sendMail(data, (error) => {
           if (error) {
             return reject(error);
           }
