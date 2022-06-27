@@ -86,4 +86,9 @@ const checkoutCartService = async (payload) => {
 
 }
 
-module.exports = { addItemToCartService, getCartByParamService, checkoutCartService };
+const getTransactionByParamService = async (query) => {
+      const transaction = await Transaction.findOne({ ...query }).populate("cartId").populate("userId");
+      return messageHandler("Transaction fetched successfully", true, SUCCESS, transaction);
+}
+
+module.exports = { addItemToCartService, getCartByParamService, checkoutCartService, getTransactionByParamService };
