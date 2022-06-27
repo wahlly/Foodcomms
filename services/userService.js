@@ -104,4 +104,25 @@ const resetPasswordService = async (payload) => {
       return messageHandler("Unable to complete request", false, BAD_REQUEST, {});
 }
 
-module.exports = { userRegistrationService, verifyEmailService, userLoginService, passwordResetRequestService, resetPasswordService };
+const fundWalletService = async ({payload, params}) => {
+      const user = await User.findOne({ _id: params.userId });
+
+      if(user === null) {
+            return messageHandler("Invalid user", false, NOT_FOUND, {});
+      }
+      if(!user.verified) {
+            return messageHandler("User is not verified", false, FORBIDDEN, {});
+      }
+
+      const updatedUser = await User.updateOne({ _id: params.userId }, { $inc: { wallet: payload.amount }});
+
+      user.wallet = user.wallet + payload.amount;
+      if(updatedUser.modifiedCount > 0) {
+            return messageHandler("Funds added to wallet", true, SUCCESS, user);
+      }
+
+      return messageHandler("Unable to complete request", false, BAD_REQUEST, {});
+}
+
+module.exports = { userRegistrationService, verifyEmailService, userLoginService, passwordResetRequestService,
+      resetPasswordService, fundWalletService };
