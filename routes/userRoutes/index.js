@@ -5,12 +5,12 @@ const { checkSchema } = require('express-validator');
 
 const { userRegistration, validateEmail, userLogin, passwordReset } = require("../../validations/userValidations/user");
 const { addFunds } = require("../../validations/userValidations/wallet");
-const { addToCartValidation } = require("../../validations/productsValidations/carts");
+const { addToCartValidation, cartCheckout } = require("../../validations/productsValidations/carts");
 
 const { userRegistrationController, verifyEmailController, userLoginController, passwordResetRequestController,
       resetPasswordController, fundWalletController } = require("../../controllers/userController");
 const { getProductsByParamController } = require("../../controllers/productController");
-const { addItemToCartController, getCartByParamController } = require("../../controllers/cartController");
+const { addItemToCartController, getCartByParamController, checkOutCartController } = require("../../controllers/cartController");
 
 router.post("/register", validate(checkSchema(userRegistration)), userRegistrationController)
 router.post("/verify-email", validate(checkSchema(validateEmail)), verifyEmailController)
@@ -24,5 +24,6 @@ router.get("/:userId/products", tokenVerifier, getProductsByParamController)
 
 router.post("/cart/add-item", tokenVerifier, validate(checkSchema(addToCartValidation)), addItemToCartController)
 router.get("/:userId/cart", tokenVerifier, getCartByParamController)
+router.post("/cart/checkout", tokenVerifier, validate(checkSchema(cartCheckout)), checkOutCartController)
 
 module.exports = router

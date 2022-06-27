@@ -13,4 +13,15 @@ const addToCartValidation = {
       }
 }
 
-module.exports = { addToCartValidation };
+const cartCheckout = {
+      userId: {
+            notEmpty: true,
+            errorMessage: "UserId is required"
+      },
+      orderId: {
+            notEmpty: true,
+            errorMessage: "OrderId is required"
+      }
+}
+
+module.exports = { addToCartValidation, cartCheckout };
