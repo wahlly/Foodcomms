@@ -1,4 +1,4 @@
-const { userRegistrationService, verifyEmailService, userLoginService } = require("../services/userService");
+const { userRegistrationService, verifyEmailService, userLoginService, passwordResetRequestService, resetPasswordService } = require("../services/userService");
 
 module.exports.userRegistrationController = async (req, res) => {
       try {
@@ -27,6 +27,28 @@ module.exports.userLoginController = async (req, res) => {
 
             res.status(user.statusCode).json({ user })
       } catch (error) {
+            console.log(error)
+            res.status(500).json({ error })
+      }
+}
+
+module.exports.passwordResetRequestController = async (req, res) => {
+      try{
+            const user = await passwordResetRequestService(req.body);
+
+            res.status(user.statusCode).json({ user })
+      } catch(error) {
+            console.log(error)
+            res.status(500).json({ error })
+      }
+}
+
+module.exports.resetPasswordController = async (req, res) => {
+      try{
+            const user = await resetPasswordService(req.body);
+
+            res.status(user.statusCode).json({ user })
+      } catch(error) {
             console.log(error)
             res.status(500).json({ error })
       }

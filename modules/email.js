@@ -1,4 +1,3 @@
-const mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_SECRET_KEY, domain: process.env.MAILGUN_DOMAIN });
 const nodemailer = require("nodemailer");
 const handlebars = require('handlebars')
 const fs = require('fs')

@@ -24,6 +24,23 @@ const userSchema = new Schema({
       }
 }, { timestamps: true });
 
-const User = model('User', userSchema, 'users');
+const otpSchema = new Schema({
+      userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+      },
+      otp: {
+            type: String,
+            required: true
+      },
+      expiresAt: {
+            type: Date,
+            required: true
+      }
+}, { timestamps: true });
 
-module.exports = { User };
+const User = model('User', userSchema, 'users');
+const OTP = model('OTP', otpSchema, 'OTP');
+
+module.exports = { User, OTP };

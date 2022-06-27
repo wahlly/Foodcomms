@@ -49,4 +49,19 @@ const validateEmail = {
       }
 }
 
-module.exports = { userRegistration, validateEmail, userLogin }
+const passwordReset = {
+      userId: {
+            notEmpty: true,
+            errorMessage: "UserId is required"
+      },
+      otp: {
+            notEmpty: true,
+            errorMessage: "Token is required"
+      },
+      newPassword: {
+            notEmpty: true,
+            errorMessage: "New Password is required"
+      }
+}
+
+module.exports = { userRegistration, validateEmail, userLogin, passwordReset }
