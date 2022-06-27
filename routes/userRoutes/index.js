@@ -8,6 +8,7 @@ const { addFunds } = require("../../validations/userValidations/wallet");
 
 const { userRegistrationController, verifyEmailController, userLoginController, passwordResetRequestController,
       resetPasswordController, fundWalletController } = require("../../controllers/userController");
+const { getProductsByParamController } = require("../../controllers/productController");
 
 router.post("/register", validate(checkSchema(userRegistration)), userRegistrationController)
 router.post("/verify-email", validate(checkSchema(validateEmail)), verifyEmailController)
@@ -16,5 +17,7 @@ router.post("/password-reset-request", passwordResetRequestController)
 router.post("/reset-password", validate(checkSchema(passwordReset)), resetPasswordController)
 
 router.put("/wallet/:userId/recharge", validate(checkSchema(addFunds)), fundWalletController)
+
+router.get("/:userId/products", tokenVerifier, getProductsByParamController)
 
 module.exports = router

@@ -10,4 +10,9 @@ const createProductListingService = async (payload) => {
       return messageHandler("Product created successfully", true, SUCCESS, product);
 }
 
-module.exports = { createProductListingService };
+const getProductsByParamService = async (query) => {
+      const products = await Product.find({ ...query });
+      return messageHandler("Products fetched successfully", true, SUCCESS, products);
+}
+
+module.exports = { createProductListingService, getProductsByParamService };
