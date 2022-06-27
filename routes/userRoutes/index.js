@@ -10,7 +10,7 @@ const { addToCartValidation } = require("../../validations/productsValidations/c
 const { userRegistrationController, verifyEmailController, userLoginController, passwordResetRequestController,
       resetPasswordController, fundWalletController } = require("../../controllers/userController");
 const { getProductsByParamController } = require("../../controllers/productController");
-const { addItemToCartController } = require("../../controllers/cartController");
+const { addItemToCartController, getCartByParamController } = require("../../controllers/cartController");
 
 router.post("/register", validate(checkSchema(userRegistration)), userRegistrationController)
 router.post("/verify-email", validate(checkSchema(validateEmail)), verifyEmailController)
@@ -23,5 +23,6 @@ router.put("/wallet/:userId/recharge", validate(checkSchema(addFunds)), fundWall
 router.get("/:userId/products", tokenVerifier, getProductsByParamController)
 
 router.post("/cart/add-item", tokenVerifier, validate(checkSchema(addToCartValidation)), addItemToCartController)
+router.get("/:userId/cart", tokenVerifier, getCartByParamController)
 
 module.exports = router

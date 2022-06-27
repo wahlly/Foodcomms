@@ -41,4 +41,9 @@ const addItemToCartService = async (payload) => {
       return messageHandler("Item added to cart successfully", true, SUCCESS, updatedCart);
 }
 
-module.exports = { addItemToCartService };
+const getCartByParamService = async (query) => {
+      const carts = await Cart.find({ ...query });
+      return messageHandler("Carts fetched successfully", true, SUCCESS, carts);
+}
+
+module.exports = { addItemToCartService, getCartByParamService };
