@@ -1,1 +1,1 @@
-A simple e-commerce API
+A simple food ordering e-commerce API
